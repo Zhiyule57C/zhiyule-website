@@ -1,0 +1,24 @@
+.review-banner{background:#f4e8eb;border-bottom:1px solid #ddc2c8;padding:10px 24px;font-size:12px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 25px;color:#845561}.review-banner nav{display:flex;flex-wrap:wrap;gap:15px}.review-banner a{text-decoration:underline;text-underline-offset:3px}.review-banner a:focus-visible{outline:2px solid #845561}
+/* Approved horizontal logo: preserve full artwork in the existing brand slots. */
+.header .brand .logo-window img,.footer .brand .logo-window img{width:100%;height:100%;object-fit:contain;object-position:center;aspect-ratio:1280/480;transform:none}
+.footer .brand .logo-window{mix-blend-mode:normal}
+
+/* zhiyule-promise:start */
+#zhiyule-promise{scroll-margin-top:150px}
+.zhiyule-promise-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.zhiyule-promise-card{min-width:0;padding:26px 22px;border:1px solid var(--line,#eadfd4);border-radius:24px;background:var(--cream,#fff9ef)}
+.zhiyule-promise-card:nth-child(2){background:#fff2e4}.zhiyule-promise-card:nth-child(3){background:#fff8df}.zhiyule-promise-card:nth-child(4){background:#edf6ef}
+.zhiyule-promise-card h3{font-size:1.2rem;line-height:1.45;margin:16px 0 8px;text-align:left;white-space:normal;overflow-wrap:break-word}
+.zhiyule-promise-card p{line-height:1.8;text-align:left;max-width:none;margin:10px 0 0}
+.zhiyule-promise .zhiyule-promise-lead,.zhiyule-promise .zhiyule-promise-intro{max-width:850px;text-wrap:pretty}
+.zhiyule-promise-home{margin:22px 0 0;line-height:1.8;text-wrap:pretty}
+.zhiyule-promise-home a{display:inline-block;text-decoration:underline;text-underline-offset:4px;margin-inline-start:8px;font-weight:600}
+@media(max-width:1000px){.zhiyule-promise-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.zhiyule-promise-grid{grid-template-columns:minmax(0,1fr);gap:14px}.zhiyule-promise-card{padding:22px}.zhiyule-promise-home a{margin-inline-start:0}.zhiyule-promise-card h3{font-size:1.2rem!important;white-space:normal!important}}
+/* zhiyule-promise:end */
+
+
+/* Consistent complete Chinese title font; English titles wrap inside cards. */
+html[lang^="zh"] .zhiyule-promise-card h3{font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;font-weight:700;font-synthesis:weight}
+html[lang="en"] .zhiyule-promise-card h3,html[lang="en"] .zhiyule-promise-card h3 .heading-tail{white-space:normal!important;overflow-wrap:anywhere;word-break:normal;max-width:100%}
+html[lang="en"] .zhiyule-promise-card h3 .heading-tail{display:inline}
