@@ -28,6 +28,8 @@ function initPage(){
  const nav=document.querySelector('.header .nav'),active=nav?.querySelector('[aria-current="page"]');
  if(nav&&active)requestAnimationFrame(()=>{const n=nav.getBoundingClientRect(),a=active.getBoundingClientRect();nav.scrollLeft+=a.left-n.left-(nav.clientWidth-a.width)/2});
 
+// Google Apps Script web app that records enquiries and emails the centre.
+const ENQUIRY_ENDPOINT='';
 const form=document.querySelector('#enquiry-form');
 if(form){
  const en=form.dataset.lang==='en',say=(zh,eng)=>en?eng:zh;
@@ -36,9 +38,17 @@ if(form){
  form.addEventListener('submit',async event=>{
   event.preventDefault();if(!form.reportValidity())return;
   const data=new FormData(form),selected=form.elements.programme.selectedOptions[0].textContent;
-  const draft=[say('你好，我想了解知语乐 ZHIYULE 体验课。','Hello, I would like to enquire about a ZHIYULE trial.'),...(data.get('parent')?[say('家长称呼：','Parent name: ')+data.get('parent')]:[]),say('孩子年龄：','Child’s age: ')+data.get('age'),say('意向班级：','Programme: ')+selected,say('中文经验：','Mandarin exposure: ')+data.get('experience'),...(data.get('question')?[say('想了解：','My questions: ')+data.get('question')]:[]),say('请告知可预约日期、费用、陪同与取消安排，谢谢。','Please share available dates, fees, accompaniment and cancellation arrangements. Thank you.')].join('\n');
+  const draft=[say('你好，我想了解知语乐 ZHIYULE 体验课。','Hello, I would like to enquire about a ZHIYULE trial.'),...(data.get('parent')?[say('家长称呼：','Parent name: ')+data.get('parent')]:[]),...(data.get('phone')?[say('联系电话：','Phone: ')+data.get('phone')]:[]),say('孩子年龄：','Child’s age: ')+data.get('age'),say('意向班级：','Programme: ')+selected,say('中文经验：','Mandarin exposure: ')+data.get('experience'),...(data.get('question')?[say('想了解：','My questions: ')+data.get('question')]:[]),say('请告知可预约日期、费用、陪同与取消安排，谢谢。','Please share available dates, fees, accompaniment and cancellation arrangements. Thank you.')].join('\n');
   document.querySelector('#enquiry-draft').value=draft;document.querySelector('#draft-area').hidden=false;
-  document.querySelector('#form-status').textContent=say('咨询草稿已生成，尚未发送，也未预约名额。点击“打开 WhatsApp”即可发送给中心，或先复制保存。','Your enquiry draft is ready. It has not been sent yet and no place is booked. Tap “Open WhatsApp” to send it to the centre, or copy it for later.');
+  const status=document.querySelector('#form-status'),button=form.querySelector('[type="submit"]');
+  status.textContent=say('正在提交……','Sending…');if(button)button.disabled=true;
+  let sent=false;
+  if(ENQUIRY_ENDPOINT&&!data.get('website')){
+   const body=new URLSearchParams({lang:en?'en':'zh',parent:data.get('parent')||'',phone:data.get('phone')||'',age:data.get('age')||'',programme:selected,experience:data.get('experience')||'',question:data.get('question')||'',page:location.pathname});
+   try{await fetch(ENQUIRY_ENDPOINT,{method:'POST',mode:'no-cors',body});sent=true}catch{}
+  }
+  if(button)button.disabled=false;
+  status.textContent=sent?say('已收到你的咨询，中心会尽快通过 WhatsApp 或电话联系你。提交咨询不代表已预约名额。也可以点“打开 WhatsApp”直接和我们聊。','Thank you, we have received your enquiry and will contact you by WhatsApp or phone soon. This does not reserve a place. You can also tap “Open WhatsApp” to chat with us now.'):say('网络问题，咨询暂未提交。请点“打开 WhatsApp”发送给中心，或稍后再试。','We could not send your enquiry. Please tap “Open WhatsApp” to send it to the centre, or try again later.');
   const wa=document.querySelector('#send-whatsapp');if(wa){wa.href='https://wa.me/6580719508?text='+encodeURIComponent(draft);wa.hidden=false}
  });
  const draftField=document.querySelector('#enquiry-draft'),waLink=document.querySelector('#send-whatsapp');
