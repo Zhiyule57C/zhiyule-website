@@ -301,3 +301,4 @@ html[lang^="zh"] body main h1:has(.parent-title-line){font-size:clamp(24px,8cqi,
 .footer-social .social-icon:hover{background:var(--peach);transform:translateY(-2px)}
 .footer-social .social-icon:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 /* footer-social:end */
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
