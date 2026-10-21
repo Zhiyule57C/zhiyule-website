@@ -121,7 +121,7 @@ initPage();
   navigation?.abort();const controller=new AbortController();navigation=controller;
   document.querySelector('main')?.setAttribute('aria-busy','true');
   try{
-   const r=await fetch(u.pathname+u.search,{signal:controller.signal,headers:{'X-ZHIYULE-Navigation':'1'}});
+   const r=await fetch(u.pathname+u.search,{cache:'no-cache',signal:controller.signal,headers:{'X-ZHIYULE-Navigation':'1'}});
    if(!r.ok||!r.headers.get('content-type')?.includes('text/html'))throw new Error('Navigation unavailable');
    const doc=new DOMParser().parseFromString(await r.text(),'text/html');
    if(!doc.querySelector('main')||controller.signal.aborted)return;
