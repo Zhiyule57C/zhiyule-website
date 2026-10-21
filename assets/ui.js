@@ -29,7 +29,7 @@ function initPage(){
  if(nav&&active)requestAnimationFrame(()=>{const n=nav.getBoundingClientRect(),a=active.getBoundingClientRect();nav.scrollLeft+=a.left-n.left-(nav.clientWidth-a.width)/2});
 
 // Google Apps Script web app that records enquiries and emails the centre.
-const ENQUIRY_ENDPOINT='';
+const ENQUIRY_ENDPOINT='https://script.google.com/macros/s/AKfycbyG6BLZJU2wMt9eyLXv6mabrH-yq9VUeO0XGYffnrPtPGbb5T0mG9tJDYnTlCaZfNR2/exec';
 const form=document.querySelector('#enquiry-form');
 if(form){
  const en=form.dataset.lang==='en',say=(zh,eng)=>en?eng:zh;
