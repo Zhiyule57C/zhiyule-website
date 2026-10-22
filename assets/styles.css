@@ -260,7 +260,7 @@ html[lang="en"] .heading-phrase{display:inline-block;max-width:100%;white-space:
 html[lang="en"] .heading-tail{white-space:nowrap}
 @media(max-width:600px){html[lang="en"] .heading-tail{white-space:normal;text-wrap:balance}}
 
-html[lang^="zh"] .phase-one :is(.v2-heading>p:not(.eyebrow),.v2-prose,.v2-lead,.v2-benefit p:not(.v2-badge),.v2-curriculum-note){text-align:justify;text-align-last:start}
+html[lang^="zh"] .phase-one :is(.v2-heading>p:not(.eyebrow),.v2-prose,.v2-lead,.v2-benefit p:not(.v2-badge),.v2-curriculum-note){text-align:start}
 
 /* Natural bilingual reading flow: intact words, balanced titles, aligned prose. */
 .reading-unit{white-space:nowrap;display:inline}
@@ -274,7 +274,7 @@ html[lang="en"] main p:not(.eyebrow):not(.micro):not(.lyric-line):not(.signature
 @media(max-width:420px){.reading-unit{font-size:inherit}.v2-founder-quote{padding:24px}}
 
 /* Screenshot-specific alignment: keep prose and centred invitations distinct. */
-html[lang^="zh"] .phase-one .v2-hero-description{text-align:justify;text-align-last:start;text-wrap:wrap;line-height:1.9}
+html[lang^="zh"] .phase-one .v2-hero-description{text-align:start;text-wrap:wrap;line-height:1.9}
 html[lang^="zh"] .v2-progress .progress-title-line{display:block;text-wrap:balance}
 html[lang^="zh"] .phase-one .v2-cta p:not(.eyebrow){width:100%;max-width:none;margin-inline:auto;text-align:center;text-align-last:center;line-height:1.8;text-wrap:pretty}
 @media(min-width:1100px){html[lang^="zh"] .phase-one .v2-cta p:not(.eyebrow){font-size:clamp(14px,1.25vw,17px);white-space:nowrap}}
@@ -302,4 +302,4 @@ html[lang^="zh"] body main h1:has(.parent-title-line){font-size:clamp(24px,8cqi,
 .footer-social .social-icon:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 /* footer-social:end */
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-.zw{white-space:nowrap}
+z-w,z-c{white-space:nowrap}z-c.zc-free{white-space:normal}

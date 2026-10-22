@@ -23,34 +23,56 @@ function fitHeadings(){
 }
 window.addEventListener('resize',()=>requestAnimationFrame(fitHeadings));
 document.fonts.ready.then(fitHeadings);
-// Keep each Chinese word on one line: wrap multi-character words in nowrap spans.
+// Keep each Chinese word on one line: wrap multi-character words in nowrap elements.
+// Custom tags (z-w, z-c, z-b) so existing `span` styles never apply to them.
+function fitClauses(){
+ document.querySelectorAll('z-c').forEach(c=>c.classList.remove('zc-free'));
+ document.querySelectorAll('z-c').forEach(c=>{const h=c.closest('h1,h2,h3,p');if(h&&c.offsetWidth>h.clientWidth)c.classList.add('zc-free')});
+}
+window.addEventListener('resize',()=>requestAnimationFrame(fitClauses));
 const keepWords=(()=>{
  if(typeof Intl==='undefined'||!Intl.Segmenter)return()=>{};
  // Site terms the browser dictionary splits (class names, curriculum words).
- const TERMS='知语乐 千惠老师 阅芽班 萌籽班 抽枝班 枝展班 繁叶班 绽放班 萌籽 抽枝 枝展 繁叶 绽放 阅芽 小芽 立干 奥尔夫 律动 跟唱 感统 多感官 五阶段 幼升小 小一 学前 学段 适龄 个月 年龄段 试听 体验课 绘本 共读 素养 潜能 亲子 家校 到访 手部 触觉 质感 控笔 纸笔 构字 认字 认读 字卡 树苗 蓄力 宋锦 纹样 共创 每堂 班额 时段 时长 场次 在线 可选 复盘 唱响 敬请 小贴士 好评 寄语 手记 育儿 全人 六维 维度 因材施教 二选一 熟悉感 安全感 成就感 自驾 一键 预览 点击 链接 剪贴板 短片 短语 构建 主线 童谣 抓握 脚尖 乘风 听懂 持牌 师生 加载 重试 华文 华语'.split(' ').sort((a,b)=>b.length-a.length);
+ const TERMS='知语乐 千惠老师 阅芽班 萌籽班 抽枝班 枝展班 繁叶班 绽放班 萌籽 抽枝 枝展 繁叶 绽放 阅芽 小芽 立干 奥尔夫 律动 跟唱 感统 多感官 五阶段 幼升小 小一 学前 学段 适龄 个月 年龄段 试听 体验课 绘本 共读 素养 潜能 亲子 家校 到访 手部 触觉 质感 控笔 纸笔 构字 认字 认读 字卡 树苗 蓄力 宋锦 纹样 共创 每堂 班额 时段 时长 场次 在线 可选 复盘 唱响 敬请 小贴士 好评 寄语 手记 育儿 全人 六维 维度 因材施教 二选一 熟悉感 安全感 成就感 自驾 一键 预览 点击 链接 剪贴板 短片 短语 构建 主线 童谣 抓握 脚尖 乘风 听懂 持牌 师生 加载 重试 华文 华语 记下 小学华文衔接'.split(' ').sort((a,b)=>b.length-a.length);
  const seg=new Intl.Segmenter('zh',{granularity:'word'}),termRe=new RegExp('('+TERMS.join('|')+')'),han=/^[㐀-鿿豈-﫿]{2,8}$/;
- const skip='script,style,textarea,select,option,[contenteditable],.zw';
- const words=t=>t.split(termRe).flatMap((part,i)=>i%2?[part]:[...seg.segment(part)].map(x=>x.segment));
+ const skip='script,style,textarea,select,option,[contenteditable],z-w';
+ // Particles such as 的 stay with the word before them so a line never starts with one.
+ const words=t=>t.split(termRe).flatMap((part,i)=>i%2?[part]:[...seg.segment(part)].map(x=>x.segment)).reduce((out,w)=>{
+  if(/^[的了着地得们吗呢吧中里]$/.test(w)&&/[\u3400-\u9fff]$/.test(out.at(-1)||''))out[out.length-1]+=w;else out.push(w);return out},[]);
  let observer;
  function run(){
   if(!document.documentElement.lang.startsWith('zh'))return;
   observer?.disconnect();
   // Older markup kept fixed character runs together, which split words; let words decide instead.
   document.querySelectorAll('main .reading-unit').forEach(u=>{const p=u.parentNode;u.replaceWith(...u.childNodes);p.normalize()});
-  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:n=>/[㐀-鿿]{2}/.test(n.data)&&!n.parentElement?.closest(skip)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT});
+  // Headings and short card lines break only between clauses (after ，。？！；：), unless a clause is wider than the line.
+  document.querySelectorAll('main :is(h1,h2,h3,p)').forEach(h=>{
+   if(h.querySelector('z-c')||h.tagName==='P'&&h.textContent.trim().length>32||/flex|grid/.test(getComputedStyle(h).display))return;
+   const tw=document.createTreeWalker(h,NodeFilter.SHOW_TEXT);const list=[];while(tw.nextNode())list.push(tw.currentNode);
+   for(const t of list){
+    const pieces=t.data.split(/(?<=[，。？！；：])/).filter(Boolean);if(pieces.length<2)continue;
+    const frag=document.createDocumentFragment();
+    for(const piece of pieces){const c=document.createElement('z-c');c.textContent=piece;frag.append(c)}
+    t.replaceWith(frag);
+   }
+  });
+  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:n=>/[\u3400-\u9fff]{2}/.test(n.data)&&!n.parentElement?.closest(skip)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT});
   const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
   for(const node of nodes){
    const parts=words(node.data);if(!parts.some(p=>han.test(p)))continue;
    const frag=document.createDocumentFragment();let text='';
    for(const part of parts){
-    if(han.test(part)){if(text)frag.append(text);text='';const span=document.createElement('span');span.className='zw';span.textContent=part;frag.append(span)}
+    if(han.test(part)){if(text)frag.append(text);text='';const span=document.createElement('z-w');span.textContent=part;frag.append(span)}
     else text+=part;
    }
-   if(text)frag.append(text);node.replaceWith(frag);
+   if(text)frag.append(text);
+   // In a flex or grid container every span would become its own item, so keep the run together.
+   if(/flex|grid/.test(getComputedStyle(node.parentElement).display)){const box=document.createElement('z-b');box.append(frag);node.replaceWith(box)}
+   else node.replaceWith(frag);
   }
   observer?.observe(document.body,{childList:true,subtree:true,characterData:true});
  }
- let queued=false;const schedule=()=>{if(!queued){queued=true;requestAnimationFrame(()=>{queued=false;run();fitHeadings()})}};
+ let queued=false;const schedule=()=>{if(!queued){queued=true;requestAnimationFrame(()=>{queued=false;run();fitHeadings();fitClauses()})}};
  observer=new MutationObserver(schedule);
  return schedule;
 })();
