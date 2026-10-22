@@ -65,7 +65,7 @@ img,video{max-width:100%}input,select,textarea{max-width:100%;min-width:0}button
  input,select,textarea{font-size:16px}.actions{flex-wrap:wrap}.actions .button{max-width:100%;white-space:normal}
  .music-dock{bottom:calc(10px + env(safe-area-inset-bottom));right:12px}.music-dock button{min-height:44px;min-width:44px}
  .footer{padding-bottom:calc(110px + env(safe-area-inset-bottom))}.course-stage-tabs>a{font-size:14px;min-height:44px}
- .grid4{grid-template-columns:repeat(2,minmax(0,1fr))}.contact-placeholder,.branch-card,.contact-enquiry{padding:24px}.map-placeholder,.branch-map{padding:22px;min-width:0}.contact-link{overflow-wrap:anywhere}
+ .grid4{grid-template-columns:repeat(2,minmax(0,1fr))}.contact-placeholder,.branch-card,.contact-enquiry{padding:24px}.map-placeholder,.branch-map{padding:22px;min-width:0}.contact-link{overflow-wrap:break-word}
  .keep-phrase{white-space:nowrap}.belief-line{font-size:16px}
 }
 @media(max-width:380px){.wrap{width:calc(100% - 28px)}.header .header-row{column-gap:8px}.header .logo-window{width:min(180px,54vw)}.programmes,.grid4{grid-template-columns:minmax(0,1fr)}.hero>.song-card{padding:20px}.founder-letter{padding:24px}.site-menu{padding:20px}.site-menu nav{gap:8px}.hero h1{font-size:30px}.footer-grid{grid-template-columns:minmax(0,1fr)}}
@@ -302,3 +302,4 @@ html[lang^="zh"] body main h1:has(.parent-title-line){font-size:clamp(24px,8cqi,
 .footer-social .social-icon:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 /* footer-social:end */
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.zw{white-space:nowrap}
