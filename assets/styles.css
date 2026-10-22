@@ -303,3 +303,24 @@ html[lang^="zh"] body main h1:has(.parent-title-line){font-size:clamp(24px,8cqi,
 /* footer-social:end */
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 z-w,z-c{white-space:nowrap}z-c.zc-free{white-space:normal}
+
+/* Giraffe illustrations: decorative scenes beside text (draft) */
+.hero-illus img,.cta-illus,.growth-illus,.method-illus,.founder-illus{display:block;height:auto;aspect-ratio:480/624}
+.page-hero-text.has-illus{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:40px;align-items:center;max-width:none}
+.hero-illus img{width:100%}
+.cta.has-illus{display:grid;grid-template-columns:130px minmax(0,1fr) auto;align-items:center}
+.cta-illus{width:130px;margin:-18px 0 -24px}
+.growth-illus,.method-illus,.founder-illus{float:right;width:120px;margin:0 0 10px 16px}
+.founder-illus{width:150px}
+@media(max-width:760px){
+ .page-hero-text.has-illus{grid-template-columns:minmax(0,1fr);gap:8px}
+ .hero-illus img{width:150px;margin:0 auto}
+ .cta.has-illus{grid-template-columns:minmax(0,1fr) auto;align-items:end}
+ .cta.has-illus>div{grid-column:1/-1;grid-row:1}
+ .cta.has-illus>.button{grid-row:2;grid-column:1;align-self:center}
+ .cta-illus{grid-row:2;grid-column:2;width:92px;margin:-6px -4px -14px 0}
+ .growth-card,.method-feature{position:relative}
+ .growth-illus,.method-illus{float:none;position:absolute;top:-24px;right:12px;width:74px;margin:0}
+ .growth-card .eyebrow,.method-feature .eyebrow{padding-right:78px}
+ .founder-illus{width:110px}
+}
