@@ -60,8 +60,9 @@
     };
   }
 
-  // Mandarin text-to-speech. Production should use recorded teacher audio instead.
-  var voice = null, active = null;
+  // Pre-recorded clips (learn/audio, made with an open-source voice) play first;
+  // the device's own text-to-speech is only a fallback for text without a clip.
+  var voice = null, active = null, player = null;
   function pickVoice() {
     if (!('speechSynthesis' in window)) return;
     var vs = speechSynthesis.getVoices();
@@ -73,27 +74,46 @@
     pickVoice();
     speechSynthesis.onvoiceschanged = pickVoice;
   }
+  function clip(text) {
+    var m = window.ZYL_AUDIO;
+    return m && m.files[text] ? 'audio/' + m.voice + '/' + m.files[text] + '.mp3' : null;
+  }
   function speak(text, opts) {
     opts = opts || {};
-    // onend runs once: from the voice, or from a timer when the device has no working voice.
+    // onend runs once: when playback ends, or from a timer if nothing can play.
     // A new call silently drops the previous call's onend.
     if (active) active();
+    if (player) player.pause();
+    if ('speechSynthesis' in window) speechSynthesis.cancel();
     var ended = false, finish = function () { if (ended) return; ended = true; active = null; if (opts.onend) opts.onend(); };
-    var fallback = setTimeout(finish, 900 + 450 * String(text).length);
+    var fallback = setTimeout(finish, 1500 + 450 * String(text).length);
     active = function () { ended = true; clearTimeout(fallback); };
+    var src = clip(text);
+    if (src) {
+      player = player || new Audio();
+      player.src = src;
+      player.onloadedmetadata = function () {
+        clearTimeout(fallback);
+        fallback = setTimeout(finish, player.duration * 1000 + 800);
+        if (opts.onstart) opts.onstart(player.duration);
+      };
+      player.onended = function () { clearTimeout(fallback); finish(); };
+      var pr = player.play();
+      if (pr && pr.catch) pr.catch(function () {});
+      return player;
+    }
     if (!('speechSynthesis' in window)) return null;
-    speechSynthesis.cancel();
     var u = new SpeechSynthesisUtterance(text);
     u.lang = 'zh-CN';
     if (voice) u.voice = voice;
     u.rate = opts.rate || 0.75;
     u.pitch = 1.1;
     u.onend = function () { clearTimeout(fallback); finish(); };
-    if (opts.onboundary) u.onboundary = opts.onboundary;
+    if (opts.onstart) opts.onstart(String(text).length * 0.43);
     speechSynthesis.speak(u);
     return u;
   }
-  function hasVoice() { return 'speechSynthesis' in window; }
+  function hasVoice() { return !!window.ZYL_AUDIO || 'speechSynthesis' in window; }
 
   function esc(s) {
     return String(s).replace(/[&<>"']/g, function (c) {

@@ -16,7 +16,7 @@
     '<span class="en">Lesson ' + n + ' · Term ' + L.term + ', week ' + L.week + (L.review ? ' · Review of lessons ' + L.unit[0] + '–' + L.unit[1] : '') + '</span>';
 
   if (!ZYL.hasVoice()) document.getElementById('no-voice').hidden = false;
-  else setTimeout(function () {
+  else if (!window.ZYL_AUDIO) setTimeout(function () {
     var vs = speechSynthesis.getVoices();
     if (vs.length && !vs.some(function (v) { return /^zh/i.test(v.lang); })) document.getElementById('no-voice').hidden = false;
   }, 1500);
@@ -197,18 +197,21 @@
     function stop() { clearInterval(timer); rt.querySelectorAll('ruby.on').forEach(function (r) { r.classList.remove('on'); }); }
     el.querySelector('#play').onclick = function () {
       stop();
-      var text = texts[ti], order = [], at = 0;
-      for (var i = 0; i < text.length; i++) order.push(i);
-      var rubies = rt.querySelectorAll('ruby');
-      timer = setInterval(function () {
-        rubies.forEach(function (r) { r.classList.remove('on'); });
+      var text = texts[ti], at = 0, n = text.replace(new RegExp(PUNCT.source, 'g'), '').length;
+      // Highlight one character at a time, paced to the clip's length.
+      function tick() {
+        rt.querySelectorAll('ruby.on').forEach(function (r) { r.classList.remove('on'); });
         while (at < text.length && PUNCT.test(text[at])) at++;
         var r = rt.querySelector('ruby[data-at="' + at + '"]');
         if (r) r.classList.add('on');
         at++;
         if (at > text.length) clearInterval(timer);
-      }, 430);
-      speak(text, { rate: 0.7, onend: function () { stop(); done('read'); } });
+      }
+      speak(text, {
+        rate: 0.7,
+        onstart: function (sec) { tick(); timer = setInterval(tick, Math.max(250, sec * 1000 / Math.max(1, n))); },
+        onend: function () { stop(); done('read'); }
+      });
     };
     el.querySelector('#pyt').onchange = function (e) { rt.classList.toggle('no-py', !e.target.checked); };
     var pg = el.querySelector('#pager');

@@ -14,5 +14,5 @@ Accounts are hard-coded in `app.js` and progress is stored in the browser (`loca
 1. A sign-in service (for example Firebase Auth or Supabase) with one account per enrolled child or parent, created by the centre, plus password reset.
 2. Progress saved on the server so it follows the child across devices, and a simple teacher/admin view.
 3. PDPA: parental consent, a privacy notice for children's data, and deletion when a child leaves.
-4. Recorded teacher audio to replace the device's text-to-speech voice.
+4. Audio: clips in `audio/v30/` were generated with the open-source Kokoro v1.1-zh voice model (Apache-2.0, voice 30) and checked with speech recognition; `data/audio.js` maps each text to its clip, and the device voice is only a fallback. Real teacher recordings would still be best.
 5. Each new grade or term: Carolina's outline → regenerate the data file.
