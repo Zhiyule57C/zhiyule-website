@@ -303,3 +303,5 @@ html[lang^="zh"] body main h1:has(.parent-title-line){font-size:clamp(24px,8cqi,
 /* footer-social:end */
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 z-w,z-c{white-space:nowrap}z-c.zc-free{white-space:normal}
+
+.student-login{display:inline-flex;align-items:center;gap:5px;font-size:14px;font-weight:700;line-height:1.2;padding:8px 14px;border-radius:100px;background:var(--butter);border:1px solid #efd98f;color:var(--accent);text-decoration:none;white-space:nowrap;transition:transform .18s,box-shadow .18s}.student-login:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(125,76,58,.12)}.nav-pill.nav-login{display:none;background:var(--butter);border-color:#efd98f;color:var(--accent);font-weight:700}@media (max-width:560px){.header-actions>.student-login{display:none}.nav-pill.nav-login{display:inline-flex}}

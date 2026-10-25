@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>学习乐园 Learning Garden · 知语乐 ZHIYULE</title>
+<meta name="theme-color" content="#fff9ef">
+<link rel="icon" href="../assets/favicon.svg">
+<link rel="stylesheet" href="learn.css?v=20261025a">
+</head>
+<body>
+<div id="top"></div>
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <h1 id="hello"></h1>
+      <p id="where" style="margin:0"></p>
+      <div class="actions" id="hero-actions"></div>
+    </div>
+    <div class="plant">
+      <img id="plant" src="img/sprout.webp" alt="" width="360" height="336">
+      <div class="stars" id="star-total"></div>
+      <span class="en">每玩一个游戏，小芽就长大一点 · Each game helps the sprout grow</span>
+    </div>
+  </section>
+
+  <h2>N1 破土班 · 全年 48 课<span class="en">N1 Sprouting Class · 48 lessons a year</span></h2>
+  <div class="tabs" role="tablist" id="terms"></div>
+  <div class="lessons" id="lessons"></div>
+
+  <section class="parents">
+    <div class="card">
+      <h3>本周家庭共读<span class="en">This week's home reading</span></h3>
+      <p class="home-text" id="week-text"></p>
+      <p class="muted" id="week-tip" style="margin:0"></p>
+    </div>
+    <div class="card">
+      <h3>给家长的小提示<span class="en">Tips for parents</span></h3>
+      <ul>
+        <li>每天 10 分钟就够，请陪孩子一起玩。<span class="en">10 minutes a day is enough. Please play together.</span></li>
+        <li>点 🔊 听发音；拼音是给家长看的，孩子不用认读。<span class="en">Tap 🔊 to hear the words. Pinyin is for parents; children don't need to read it.</span></li>
+        <li>和阅读本、功课本一起用：先读小课文，再描当周的笔画。<span class="en">Use it with the reading book and homework book: read the short text, then trace the week's stroke.</span></li>
+        <li>新课在上完课后才会打开。<span class="en">New lessons open after the class has had them in the centre.</span></li>
+      </ul>
+    </div>
+  </section>
+</main>
+<footer class="foot">© 2026 Zhiyule Mandarin Space Pte. Ltd. · Demo 测试版</footer>
+<script src="data/n1.js?v=20261025a"></script>
+<script src="app.js?v=20261025a"></script>
+<script>
+(function () {
+  var user = ZYL.requireLogin();
+  if (!user) return;
+  ZYL.header(user);
+  var D = window.ZYL_N1, prog = ZYL.progress(user), esc = ZYL.esc;
+  var now = D.lessons[user.upTo - 1];
+  var resume = D.lessons.filter(function (l) { return l.n <= user.upTo && prog.stars(l.n) < (l.review ? 5 : 5); }).pop() || now;
+
+  document.getElementById('hello').innerHTML = '你好，' + esc(user.name) + '！<span class="en">Hi, ' + esc(user.nameEn) + '!</span>';
+  document.getElementById('where').innerHTML = user.teacher
+    ? '老师预览：全部课程已打开。<span class="en">Teacher preview: every lesson is open.</span>'
+    : 'N1 破土班 · 第' + now.term + '学期 第' + now.week + '周<span class="en">N1 · Term ' + now.term + ', week ' + now.week + '</span>';
+  document.getElementById('hero-actions').innerHTML =
+    '<a class="btn" href="lesson.html?n=' + resume.n + '">继续学习：第' + resume.n + '课<span class="en">Continue: lesson ' + resume.n + '</span></a>';
+
+  var total = prog.total();
+  document.getElementById('star-total').textContent = '⭐ × ' + total;
+  document.getElementById('plant').style.transform = 'scale(' + Math.min(1, .55 + total / 60) + ')';
+
+  var cur = now.term, tabs = document.getElementById('terms');
+  for (var t = 1; t <= 4; t++) {
+    tabs.insertAdjacentHTML('beforeend', '<button role="tab" data-t="' + t + '">第' + t + '学期<span class="en">Term ' + t + '</span></button>');
+  }
+  function renderTerm(t) {
+    cur = t;
+    tabs.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-selected', String(+b.dataset.t === t)); });
+    var html = '';
+    D.lessons.filter(function (l) { return l.term === t; }).forEach(function (l) {
+      var locked = l.n > user.upTo, s = prog.stars(l.n);
+      var pic = l.review ? '🔁' : (D.words[l.cards[0]] || {}).pic || '📖';
+      var cls = 'lesson-card' + (l.review ? ' review' : '') + (locked ? ' locked' : '') + (s >= 5 ? ' done' : '') + (!user.teacher && l.n === user.upTo ? ' now' : '');
+      html += '<a class="' + cls + '" href="lesson.html?n=' + l.n + '"' + (locked ? ' aria-disabled="true" tabindex="-1"' : '') + '>' +
+        '<div class="no">第' + l.n + '课 · Lesson ' + l.n + '</div><div class="pic">' + (locked ? '🔒' : pic) + '</div>' +
+        '<h3>' + (l.review ? '复习 Review' : '《' + esc(l.book) + '》') + '</h3>' +
+        '<div class="words">' + (l.review ? '第' + l.unit[0] + '—' + l.unit[1] + '课' : esc(l.cards.join(' · '))) + '</div>' +
+        '<div class="stars">' + (locked ? '<span class="en">上完课后打开 Opens after class</span>' : '⭐'.repeat(s) + '☆'.repeat(Math.max(0, 5 - s))) + '</div></a>';
+    });
+    document.getElementById('lessons').innerHTML = html;
+  }
+  tabs.onclick = function (e) { var b = e.target.closest('button'); if (b) renderTerm(+b.dataset.t); };
+  renderTerm(cur);
+
+  var wt = now.review ? now.texts.join(' ') : now.texts[0];
+  document.getElementById('week-text').textContent = wt;
+  document.getElementById('week-tip').innerHTML = '第' + now.n + '课 ' + (now.review ? '复习' : '《' + esc(now.book) + '》') + '：' + esc(now.tip.zh) + '<span class="en">' + esc(now.tip.en) + '</span>';
+})();
+</script>
+</body>
+</html>

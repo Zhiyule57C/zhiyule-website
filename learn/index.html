@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>学生登录 Student Login · 知语乐 ZHIYULE</title>
+<meta name="theme-color" content="#fff9ef">
+<link rel="icon" href="../assets/favicon.svg">
+<link rel="stylesheet" href="learn.css?v=20261025a">
+</head>
+<body>
+<div id="top"></div>
+<main class="login-page">
+  <div class="card login">
+    <img class="mascot" src="img/giraffe.webp" alt="" width="360" height="468">
+    <h1>学生登录<span class="en">Student Login</span></h1>
+    <p class="muted">知语乐学习乐园：在家听一听、玩一玩，复习课堂上学的字卡和小课文。<span class="en">Zhiyule Learning Garden: review this week's word cards and home reading with fun games.</span></p>
+    <form id="login-form" autocomplete="off">
+      <label>学生账号 <span class="en" style="display:inline">Student ID</span>
+        <input id="uid" name="uid" autocapitalize="none" spellcheck="false" required></label>
+      <label>密码 <span class="en" style="display:inline">Password</span>
+        <input id="pw" name="pw" type="password" required></label>
+      <p class="error" id="err" role="alert"></p>
+      <button class="btn" type="submit">登录 Log in</button>
+    </form>
+    <p class="muted" style="font-size:14px;margin:14px 0 0">账号由知语乐在报名后发给家长。<span class="en">Parents receive the login from Zhiyule after enrolment.</span></p>
+    <div class="demo-accounts">
+      <b>测试账号（Demo）</b><span class="en">Tap one to fill it in</span>
+      <button type="button" data-u="n1-demo" data-p="2027"><span>小乐 · N1 第1学期第8周<span class="en">Term 1, week 8</span></span><code>n1-demo / 2027</code></button>
+      <button type="button" data-u="n1-term3" data-p="2027"><span>小语 · N1 第3学期第5周<span class="en">Term 3, week 5</span></span><code>n1-term3 / 2027</code></button>
+      <button type="button" data-u="teacher" data-p="zhiyule"><span>老师预览 · 全部48课<span class="en">Teacher: all 48 lessons</span></span><code>teacher / zhiyule</code></button>
+    </div>
+  </div>
+</main>
+<footer class="foot">© 2026 Zhiyule Mandarin Space Pte. Ltd. · <a href="../zh/">返回官网 Back to website</a></footer>
+<script src="app.js?v=20261025a"></script>
+<script>
+ZYL.header(null);
+if (ZYL.current()) location.replace('home.html');
+document.querySelectorAll('.demo-accounts button').forEach(function (b) {
+  b.onclick = function () { document.getElementById('uid').value = b.dataset.u; document.getElementById('pw').value = b.dataset.p; };
+});
+document.getElementById('login-form').onsubmit = function (e) {
+  e.preventDefault();
+  if (ZYL.login(document.getElementById('uid').value, document.getElementById('pw').value)) location.href = 'home.html';
+  else document.getElementById('err').textContent = '账号或密码不对，请再试一次。Wrong ID or password, please try again.';
+};
+</script>
+</body>
+</html>
