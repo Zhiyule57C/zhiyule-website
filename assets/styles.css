@@ -303,3 +303,16 @@ html[lang^="zh"] body main h1:has(.parent-title-line){font-size:clamp(24px,8cqi,
 /* footer-social:end */
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 z-w,z-c{white-space:nowrap}z-c.zc-free{white-space:normal}
+
+/* Music hint: a small floating invitation to play the theme song */
+.music-hint{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:45;display:flex;align-items:center;background:#fffaf2;border:1px solid #ecd9b6;border-radius:100px;box-shadow:0 6px 20px #5443301f;opacity:0;transform:translateY(8px);transition:opacity .35s,transform .35s}
+.music-hint.is-visible{opacity:1;transform:none}
+.music-hint[hidden]{display:none}
+.music-hint button{border:0;background:none;color:#5b4637;font:inherit;cursor:pointer}
+.music-hint-play{display:flex;align-items:center;gap:8px;padding:9px 6px 9px 14px;font-size:14px;min-height:44px}
+.music-hint-note{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#f3ae9d;color:#fff;font-size:15px;animation:hint-bob 2.4s ease-in-out infinite}
+.music-hint-close{width:40px;min-height:44px;font-size:20px;color:#a08a76!important;border-radius:0 100px 100px 0}
+.music-hint button:focus-visible{outline:2px solid #816b55;outline-offset:-3px;border-radius:100px}
+@keyframes hint-bob{50%{transform:translateY(-2px) rotate(-8deg)}}
+@media(prefers-reduced-motion:reduce){.music-hint-note{animation:none}.music-hint{transition:none}}
+@media(max-width:760px){.music-hint{right:12px;bottom:calc(12px + env(safe-area-inset-bottom))}.music-hint-play{font-size:13px}}
