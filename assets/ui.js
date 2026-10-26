@@ -116,14 +116,16 @@ if(form){
 try{localStorage.setItem('zhiyule-language',document.documentElement.lang.startsWith('zh')?'zh':'en')}catch{}
 }
 initPage();
-// One audio element, shared controls and a remembered opt-out on every page.
+// One audio element and shared controls on every page. Music starts by default on each visit;
+// turning it off is remembered only for the current visit.
 (()=>{
  const audio=document.getElementById('theme-audio');if(!audio)return;
  const say=(a,b)=>document.documentElement.lang.startsWith('zh')?a:b;
  const toggles=()=>[...document.querySelectorAll('.music-toggle')];
  const statuses=()=>[...document.querySelectorAll('.music-status')];
- const read=(key)=>{try{return localStorage.getItem(key)}catch{return null}};
- const write=(key,value)=>{try{localStorage.setItem(key,value)}catch{}};
+ const read=(key)=>{try{return sessionStorage.getItem(key)}catch{return null}};
+ const write=(key,value)=>{try{sessionStorage.setItem(key,value)}catch{}};
+ try{localStorage.removeItem('zhiyule-music')}catch{}
  let wantsPlay=read('zhiyule-music')!=='off',requestVersion=0,awaitingGesture=false;
  audio.volume=.32;
  let lastSaved=0;
@@ -153,15 +155,16 @@ initPage();
  document.addEventListener('click',ev=>{
   if(ev.target.closest('.music-toggle')){if(audio.paused)play();else stop()}
   if(ev.target.closest('.music-off')){stop();return}
-  if(!ev.target.closest('.music-toggle')&&awaitingGesture&&wantsPlay)play();
  });
+ // Browsers only allow sound after the visitor interacts, so start on the first tap, click or key press.
+ const firstGesture=ev=>{if(awaitingGesture&&wantsPlay&&!ev.target.closest?.('.music-toggle,.music-off')){awaitingGesture=false;play()}};
+ for(const type of ['pointerdown','touchend','keydown','click'])document.addEventListener(type,firstGesture,{capture:true,passive:true});
  document.addEventListener('zhiyule:navigate',()=>{update();message(audio.paused?say('点击播放，让主题曲陪你浏览。','Press play to listen while you browse.'):say('主题曲正在播放。','The theme song is playing.'))});
  document.addEventListener('play',ev=>{if(ev.target.tagName==='VIDEO'){awaitingGesture=false;wantsPlay=false;++requestVersion;audio.pause();rememberPosition();message(say('视频播放中，主题曲已暂停。','The theme song is paused while the video plays.'));update()}},true);
  audio.addEventListener('play',update);audio.addEventListener('pause',update);
  audio.addEventListener('error',()=>{message(say('音乐暂时无法播放，请稍后重试。','The song is unavailable right now. Please try again later.'));update()});
  audio.addEventListener('timeupdate',()=>{if(Date.now()-lastSaved>2000){rememberPosition();lastSaved=Date.now()}});
  window.addEventListener('pagehide',rememberPosition);
- window.addEventListener('storage',ev=>{if(ev.key==='zhiyule-music'&&ev.newValue==='off')stop()});
  update();
  if(wantsPlay)play();
  else if(!wantsPlay)message(say('音乐已关闭。点击播放即可重新开启。','Music is off. Press play to listen again.'));
