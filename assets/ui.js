@@ -132,7 +132,7 @@ initPage();
  const message=text=>statuses().forEach(el=>el.textContent=text);
  function update(){
   const playing=!audio.paused&&!audio.ended;
-  toggles().forEach(b=>{if(!b.classList.contains('music-speaker'))b.textContent=playing?say('暂停','Pause'):say('播放主题曲','Play song');b.setAttribute('aria-label',playing?say('暂停主题曲','Pause theme song'):say('播放主题曲','Play theme song'));b.setAttribute('aria-pressed',String(playing))});
+  toggles().forEach(b=>{if(!b.classList.contains('music-speaker')&&!b.classList.contains('music-hint-play'))b.textContent=playing?say('暂停','Pause'):say('播放主题曲','Play song');b.setAttribute('aria-label',playing?say('暂停主题曲','Pause theme song'):say('播放主题曲','Play theme song'));b.setAttribute('aria-pressed',String(playing))});
   document.body.classList.toggle('music-playing',playing);
  }
  function rememberPosition(){try{sessionStorage.setItem('zhiyule-music-position',String(audio.currentTime||0))}catch{}}
@@ -165,6 +165,23 @@ initPage();
  audio.addEventListener('error',()=>{message(say('音乐暂时无法播放，请稍后重试。','The song is unavailable right now. Please try again later.'));update()});
  audio.addEventListener('timeupdate',()=>{if(Date.now()-lastSaved>2000){rememberPosition();lastSaved=Date.now()}});
  window.addEventListener('pagehide',rememberPosition);
+ // A small invitation to listen, shown while the song is waiting for the visitor.
+ const hint=document.createElement('div');hint.className='music-hint';hint.hidden=true;
+ hint.innerHTML='<button type="button" class="music-toggle music-hint-play"><span class="music-hint-note" aria-hidden="true">♪</span><span class="music-hint-text"></span></button><button type="button" class="music-off music-hint-close"><span aria-hidden="true">×</span></button>';
+ // WhatsApp shortcut above the hint: the giraffe on the phone opens a chat with the centre.
+ const wa=document.createElement('a');wa.className='wa-float';wa.href='https://wa.me/6580719508';wa.target='_blank';wa.rel='noopener noreferrer';
+ wa.innerHTML='<img src="/assets/illustrations/contact.webp" alt="" width="480" height="624"><span class="wa-badge" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" focusable="false"><path fill="none" stroke="#fff" stroke-width="1.9" stroke-linejoin="round" d="M4.2 19.8l1.1-3.9A8.2 8.2 0 1 1 8.4 19l-4.2.8Z"/><path fill="#fff" d="M9.3 7.9c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.7 1.6c.1.2 0 .5-.1.6l-.5.6c-.1.1-.1.3 0 .5.6 1 1.4 1.8 2.4 2.3.2.1.4.1.5 0l.6-.7c.2-.2.4-.2.6-.1l1.6.8c.2.1.3.3.3.5 0 .5-.2 1.3-.8 1.6-.6.4-1.5.5-2.6.1-2.1-.8-3.9-2.5-4.8-4.5-.5-1.1-.3-2.3.4-3.3Z"/></svg></span>';
+ const waLabel=()=>{const t=say('通过 WhatsApp 联系知语乐（在新标签页打开）','Chat with ZHIYULE on WhatsApp (opens in a new tab)');wa.setAttribute('aria-label',t);wa.title=t};waLabel();
+ document.body.append(wa,hint);
+ document.addEventListener('zhiyule:navigate',waLabel);
+ function showHint(){
+  hint.querySelector('.music-hint-text').textContent=say('点一下，听主题曲《星光发芽》','Tap to hear our theme song');
+  hint.querySelector('.music-hint-close').setAttribute('aria-label',say('关闭音乐提示','Close music hint'));
+  hint.hidden=!(audio.paused&&wantsPlay);requestAnimationFrame(()=>hint.classList.toggle('is-visible',!hint.hidden));
+ }
+ audio.addEventListener('play',showHint);audio.addEventListener('pause',showHint);
+ document.addEventListener('click',ev=>{if(ev.target.closest('.music-off'))showHint()});
+ setTimeout(showHint,1200);
  update();
  if(wantsPlay)play();
  else if(!wantsPlay)message(say('音乐已关闭。点击播放即可重新开启。','Music is off. Press play to listen again.'));
