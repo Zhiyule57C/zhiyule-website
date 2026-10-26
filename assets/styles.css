@@ -324,4 +324,4 @@ z-w,z-c{white-space:nowrap}z-c.zc-free{white-space:normal}
 .wa-badge{position:absolute;right:0;bottom:2px;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:#25d366;border:2px solid #fffaf2}
 .wa-badge svg{width:19px;height:19px}
 .music-hint[hidden]~.wa-float,.wa-float:has(~.music-hint[hidden]){bottom:calc(18px + env(safe-area-inset-bottom))}
-@media(max-width:760px){.wa-float{right:12px;bottom:calc(68px + env(safe-area-inset-bottom));width:60px;height:60px}.wa-float img{width:44px}.wa-badge{right:-5px;width:32px;height:32px}.wa-float:has(~.music-hint[hidden]){bottom:calc(12px + env(safe-area-inset-bottom))}}
+@media(max-width:760px){.wa-float{right:12px;bottom:calc(68px + env(safe-area-inset-bottom));width:60px;height:60px}.wa-float img{width:44px}.wa-badge{right:-3px;bottom:-3px;width:26px;height:26px}.wa-badge svg{width:16px;height:16px}.wa-float:has(~.music-hint[hidden]){bottom:calc(12px + env(safe-area-inset-bottom))}}
