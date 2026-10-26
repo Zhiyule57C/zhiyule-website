@@ -318,9 +318,10 @@ z-w,z-c{white-space:nowrap}z-c.zc-free{white-space:normal}
 @media(max-width:760px){.music-hint{right:12px;bottom:calc(12px + env(safe-area-inset-bottom))}.music-hint-play{font-size:13px}}
 /* WhatsApp shortcut: giraffe on the phone, stacked above the music hint */
 .wa-float{position:fixed;right:18px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:45;display:block;width:68px;height:68px;border-radius:50%;background:#fffaf2;border:1px solid #ecd9b6;box-shadow:0 6px 20px #5443301f;transition:transform .2s}
-.wa-float img{position:absolute;left:50%;bottom:4px;width:50px;height:auto;transform:translateX(-46%)}
+.wa-float img{position:absolute;left:50%;bottom:9px;width:38px;height:auto;transform:translateX(-62%)}
 .wa-float:hover{transform:translateY(-2px)}
 .wa-float:focus-visible{outline:2px solid #816b55;outline-offset:3px}
-.wa-badge{position:absolute;right:-3px;bottom:-3px;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#25d366;border:2px solid #fffaf2}
+.wa-badge{position:absolute;right:-6px;bottom:-6px;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:#25d366;border:2px solid #fffaf2}
+.wa-badge svg{width:22px;height:22px}
 .music-hint[hidden]~.wa-float,.wa-float:has(~.music-hint[hidden]){bottom:calc(18px + env(safe-area-inset-bottom))}
-@media(max-width:760px){.wa-float{right:12px;bottom:calc(68px + env(safe-area-inset-bottom));width:60px;height:60px}.wa-float img{width:44px}.wa-float:has(~.music-hint[hidden]){bottom:calc(12px + env(safe-area-inset-bottom))}}
+@media(max-width:760px){.wa-float{right:12px;bottom:calc(68px + env(safe-area-inset-bottom));width:60px;height:60px}.wa-float img{width:34px}.wa-float:has(~.music-hint[hidden]){bottom:calc(12px + env(safe-area-inset-bottom))}}
