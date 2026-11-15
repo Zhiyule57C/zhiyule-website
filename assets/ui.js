@@ -312,13 +312,3 @@ hydrateContent();
 document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a[href*="wa.me/"],a[href*="api.whatsapp.com"]');if(a){(window.dataLayer=window.dataLayer||[]).push({event:'whatsapp_click',link_url:a.href.split('?')[0]});if(typeof oaiq==='function')oaiq('measure','custom',{type:'custom'},{custom_event_name:'whatsapp_click'});if(typeof gtag==='function')gtag('event','conversion',{send_to:'AW-18575906021/xWmyCMC00LgdEOWp15lF',transport_type:'beacon'})}},true);
 /* Event listings: grey out talks once they have ended, and hide the talk card when all are over. */
 (()=>{const now=Date.now();document.querySelectorAll('.ev-talk[data-until]').forEach(el=>{if(Date.parse(el.dataset.until)<now){el.classList.add('is-past');const tag=el.querySelector('.ev-past');if(tag)tag.hidden=false}});document.querySelectorAll('.ev-talks').forEach(card=>{const talks=card.querySelectorAll('.ev-talk');if(talks.length&&card.querySelectorAll('.ev-talk.is-past').length===talks.length)card.hidden=true})})();
-
-/* Comics: show one page at a time, turned with the arrow buttons, page numbers, arrow keys or a swipe. */
-(()=>{const r=document.querySelector('.comic-reader');if(!r)return;r.classList.add('js-reader');
-const pages=[...r.querySelectorAll('.cr-page')],dots=[...r.querySelectorAll('.cr-dot')];let n=1;
-const go=(k,scroll)=>{n=Math.min(Math.max(k,1),pages.length);pages.forEach((p,i)=>p.classList.toggle('is-current',i===n-1));dots.forEach((d,i)=>{if(i===n-1)d.setAttribute('aria-current','true');else d.removeAttribute('aria-current')});r.querySelectorAll('[data-step]').forEach(b=>{b.disabled=+b.dataset.step<0?n===1:n===pages.length});
-const nx=pages[n]?.querySelector('img');if(nx)nx.loading='eager';if(scroll){const top=r.getBoundingClientRect().top;if(top<0)r.scrollIntoView({block:'start'})}};
-r.addEventListener('click',e=>{const b=e.target.closest('[data-step],[data-go]');if(!b)return;go(b.dataset.go?+b.dataset.go:n+ +b.dataset.step,true)});
-r.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){go(n-1);e.preventDefault()}if(e.key==='ArrowRight'){go(n+1);e.preventDefault()}});
-let x0=null,y0=null;r.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});r.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy))go(n+(dx<0?1:-1),true);x0=null},{passive:true});
-go(1)})();
