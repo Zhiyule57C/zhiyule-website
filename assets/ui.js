@@ -99,7 +99,7 @@ if(form){
   let sent=false;
   if(ENQUIRY_ENDPOINT&&!data.get('website')){
    const body=new URLSearchParams({lang:en?'en':'zh',parent:data.get('parent')||'',phone:data.get('phone')||'',age:data.get('age')||'',programme:selected,experience:data.get('experience')||'',question:data.get('question')||'',page:location.pathname});
-   try{await fetch(ENQUIRY_ENDPOINT,{method:'POST',mode:'no-cors',body});sent=true;(window.dataLayer=window.dataLayer||[]).push({event:'enquiry_submit',enquiry_lang:en?'en':'zh'});if(typeof gtag==='function')gtag('event','conversion',{send_to:'AW-18575906021/xedZCL200LgdEOWp15lF'})}catch{}
+   try{await fetch(ENQUIRY_ENDPOINT,{method:'POST',mode:'no-cors',body});sent=true;(window.dataLayer=window.dataLayer||[]).push({event:'enquiry_submit',enquiry_lang:en?'en':'zh'});if(typeof gtag==='function'){const p=(data.get('phone')||'').replace(/[^0-9+]/g,'');const e164=/^\+\d{8,15}$/.test(p)?p:/^65\d{8}$/.test(p)?'+'+p:/^[3689]\d{7}$/.test(p)?'+65'+p:'';if(e164)gtag('set','user_data',{phone_number:e164});gtag('event','conversion',{send_to:'AW-18575906021/xedZCL200LgdEOWp15lF'})}}catch{}
   }
   if(button)button.disabled=false;
   status.textContent=sent?say('已收到你的咨询，中心会尽快通过 WhatsApp 或电话联系你。提交咨询不代表已预约名额。也可以点“打开 WhatsApp”直接和我们聊。','Thank you, we have received your enquiry and will contact you by WhatsApp or phone soon. This does not reserve a place. You can also tap “Open WhatsApp” to chat with us now.'):say('网络问题，咨询暂未提交。请点“打开 WhatsApp”发送给中心，或稍后再试。','We could not send your enquiry. Please tap “Open WhatsApp” to send it to the centre, or try again later.');
