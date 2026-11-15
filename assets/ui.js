@@ -310,3 +310,5 @@ hydrateContent();
 
 /* Ad measurement: tell Google Tag Manager when a visitor opens WhatsApp. */
 document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a[href*="wa.me/"],a[href*="api.whatsapp.com"]');if(a){(window.dataLayer=window.dataLayer||[]).push({event:'whatsapp_click',link_url:a.href.split('?')[0]});if(typeof oaiq==='function')oaiq('measure','custom',{type:'custom'},{custom_event_name:'whatsapp_click'});if(typeof gtag==='function')gtag('event','conversion',{send_to:'AW-18575906021/xWmyCMC00LgdEOWp15lF',transport_type:'beacon'})}},true);
+/* Event listings: grey out talks once they have ended, and hide the talk card when all are over. */
+(()=>{const now=Date.now();document.querySelectorAll('.ev-talk[data-until]').forEach(el=>{if(Date.parse(el.dataset.until)<now){el.classList.add('is-past');const tag=el.querySelector('.ev-past');if(tag)tag.hidden=false}});document.querySelectorAll('.ev-talks').forEach(card=>{const talks=card.querySelectorAll('.ev-talk');if(talks.length&&card.querySelectorAll('.ev-talk.is-past').length===talks.length)card.hidden=true})})();
