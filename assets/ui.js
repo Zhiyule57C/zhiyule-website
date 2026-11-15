@@ -312,3 +312,13 @@ hydrateContent();
 document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a[href*="wa.me/"],a[href*="api.whatsapp.com"]');if(a){(window.dataLayer=window.dataLayer||[]).push({event:'whatsapp_click',link_url:a.href.split('?')[0]});if(typeof oaiq==='function')oaiq('measure','custom',{type:'custom'},{custom_event_name:'whatsapp_click'});if(typeof gtag==='function')gtag('event','conversion',{send_to:'AW-18575906021/xWmyCMC00LgdEOWp15lF',transport_type:'beacon'})}},true);
 /* Event listings: grey out talks once they have ended, and hide the talk card when all are over. */
 (()=>{const now=Date.now();document.querySelectorAll('.ev-talk[data-until]').forEach(el=>{if(Date.parse(el.dataset.until)<now){el.classList.add('is-past');const tag=el.querySelector('.ev-past');if(tag)tag.hidden=false}});document.querySelectorAll('.ev-talks').forEach(card=>{const talks=card.querySelectorAll('.ev-talk');if(talks.length&&card.querySelectorAll('.ev-talk.is-past').length===talks.length)card.hidden=true})})();
+
+/* Comics: open a page full size, with previous/next buttons, arrow keys and swipe. */
+(()=>{const grid=document.querySelector('.comic-grid'),dlg=document.querySelector('.comic-viewer');if(!grid||!dlg||!dlg.showModal)return;
+const base=grid.dataset.comic,titles=grid.dataset.titles.split('|'),word=grid.dataset.pageWord,img=dlg.querySelector('img'),cap=dlg.querySelector('figcaption'),prev=dlg.querySelector('[data-cv="prev"]'),next=dlg.querySelector('[data-cv="next"]');let n=1;
+const show=k=>{n=Math.min(Math.max(k,1),titles.length);img.src=base+'p'+n+'.webp';img.alt=titles[n-1];cap.textContent=word.replace('{n}',n)+' · '+titles[n-1];prev.disabled=n===1;next.disabled=n===titles.length};
+grid.addEventListener('click',e=>{const b=e.target.closest('[data-comic-page]');if(!b)return;show(+b.dataset.comicPage);dlg.showModal()});
+dlg.addEventListener('click',e=>{const a=e.target.closest('[data-cv]')?.dataset.cv;if(a==='close')dlg.close();else if(a==='prev')show(n-1);else if(a==='next')show(n+1);else if(e.target===dlg)dlg.close()});
+dlg.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')show(n-1);if(e.key==='ArrowRight')show(n+1)});
+let x0=null;dlg.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});dlg.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)show(n+(dx<0?1:-1));x0=null},{passive:true});
+dlg.addEventListener('close',()=>{const b=grid.querySelector('[data-comic-page="'+n+'"]');if(b)b.focus()})})();
