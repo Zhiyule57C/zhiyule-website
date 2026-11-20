@@ -202,6 +202,8 @@ initPage();
   ev.preventDefault();navigate(u,true);
  });
  async function navigate(u,push){
+  // Comics pages run their own inline reader script, which a content swap would skip: load them in full.
+  if(/\/comics\/?$/.test(u.pathname)){location.assign(u.href);return}
   navigation?.abort();const controller=new AbortController();navigation=controller;
   document.querySelector('main')?.setAttribute('aria-busy','true');
   try{
